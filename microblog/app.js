@@ -7,7 +7,7 @@ var ejs = require('ejs');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var settings = require('./settings');
-
+var flash = require('connect-flash');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,14 +19,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // session
 app.use(session({
@@ -35,6 +28,31 @@ app.use(session({
     url: 'mongodb://localhost/microblog'
   })
 }));
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// flash闪回
+app.use(flash());
+app.use(function(req, res, next) {
+  console.log('app.user local');
+  res.locals.user = req.session.user;
+  res.locals.post = req.session.post;
+  var error = req.flash('error');
+  res.locals.error = error.length ? error:null;
+
+  var success = req.flash('success');
+  res.locals.success = success.length ? success:null;
+  next();
+});
+
+// 路由
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
 
 
 // catch 404 and forward to error handler
@@ -52,5 +70,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;

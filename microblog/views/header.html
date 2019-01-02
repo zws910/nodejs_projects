@@ -27,10 +27,25 @@
                 <div class="nav-collapse">
                     <ul class="nav">
                         <li class="active"><a href="/">Home</a></li>
+                        <% if (!user) {%>
                         <li><a href="/login">Sign in</a></li>
                         <li><a href="/reg">Sign up</a></li>
+                        <% }else {%>
+                        <li><a href="/logout">Log out</a></li>
+                        <% } %>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+    <div id="container" class="container">
+        <% if(success){ %>
+        <div class="alert alert-success">
+            <%= success %>
+        </div>
+        <% } %>
+        <% if(error){ %>
+        <div class="alert alert-error">
+            <%= error %>
+        </div>
+        <% } %>
