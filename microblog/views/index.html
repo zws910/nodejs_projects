@@ -1,4 +1,5 @@
 <% include header.html %>
+<% if(!user) {%>
     <div class="hero-unit">
         <h1>Welcome to Microblog</h1>
         <p>Microblog is a mini blog system based on Node.js</p>
@@ -7,4 +8,8 @@
             <a class="btn btn-large" href="/reg">Sign up</a>
         </p>
     </div>
+<%} else {%>
+    <% include say.html %>
+<%}  %>
+<% include posts.html %>
 <% include footer.html %>
